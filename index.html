@@ -9,6 +9,9 @@
 <body>
 <div id="container">
 
+  <!-- Animated Aurora Background -->
+  <canvas id="aurora"></canvas>
+
   <!-- Header -->
   <header>
     <h1>FUGITIVE</h1>
@@ -16,22 +19,33 @@
   </header>
 
   <!-- Menu -->
-  <div id="menu">
+  <div id="menu" class="glass-panel">
     <button class="menu-btn" onclick="hostGame()">Host Game</button>
     <button class="menu-btn" onclick="joinGame()">Join Game</button>
     <button class="menu-btn" onclick="openInventory()">Inventory</button>
   </div>
 
   <!-- Inventory Panel -->
-  <div id="inventory" class="panel hidden">
+  <div id="inventory" class="panel hidden glass-panel">
     <h2>Inventory / Charm Boxes</h2>
     <div class="charm-box normal">Normal Box</div>
     <div class="charm-box super">Super Box</div>
     <div class="charm-box ultra">Ultra Box</div>
-    <button onclick="closeInventory()">Close</button>
+    <button class="menu-btn" onclick="closeInventory()">Close</button>
+  </div>
+
+  <!-- Map placeholder -->
+  <div id="map" class="glass-panel">
+    <div id="player-dot"></div>
+  </div>
+
+  <!-- Ping Timer -->
+  <div id="ping-timer" class="glass-panel">
+    Ping in: <span id="ping-count">20:00</span>
   </div>
 
 </div>
 <script src="app.js"></script>
+<script src="aurora.js"></script>
 </body>
 </html>
