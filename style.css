@@ -1,21 +1,89 @@
+/* Dark aura / gradient background */
 body {
-  background: #0b0b0b;
+  margin: 0;
+  font-family: -apple-system, SF Pro, sans-serif;
+  background: linear-gradient(160deg, #0f0c29, #302b63, #24243e);
   color: white;
-  font-family: Arial, sans-serif;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#container {
+  width: 100%;
+  height: 100%;
+  max-width: 450px; /* simulates 9:16 on desktop */
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  backdrop-filter: blur(5px);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 0 60px rgba(255,255,255,0.1);
+}
+
+/* Header */
+header h1 {
+  font-style: italic;
+  font-size: 2em;
+  margin-bottom: 5px;
+  text-shadow: 0 0 15px #fff, 0 0 30px #9b59b6;
+}
+
+/* Menu Buttons */
+.menu-btn {
+  padding: 15px 30px;
+  margin: 10px;
+  font-size: 16px;
+  border: 2px solid #fff;
+  background: rgba(255,255,255,0.05);
+  color: white;
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.menu-btn:hover {
+  transform: scale(1.05);
+  background: rgba(255,255,255,0.2);
+  text-shadow: 0 0 10px #9b59b6;
+}
+
+/* Inventory Panel */
+.panel {
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  padding: 20px;
+  background: rgba(20,20,30,0.8);
+  border-radius: 20px;
+  backdrop-filter: blur(15px);
+  box-shadow: 0 0 30px #9b59b6;
   text-align: center;
 }
 
-button {
-  padding: 15px 30px;
-  margin: 10px;
-  font-size: 18px;
-  cursor: pointer;
-  background: #111;
-  color: white;
-  border: 2px solid white;
+.hidden {
+  display: none;
 }
 
-button:hover {
-  background: white;
-  color: black;
+.charm-box {
+  padding: 15px;
+  margin: 10px;
+  border-radius: 15px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.normal { background: #7f8c8d; }
+.super { background: #8e44ad; }
+.ultra { background: #e74c3c; }
+
+.charm-box:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 20px #fff;
 }
