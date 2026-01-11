@@ -1,69 +1,76 @@
-/* Dark aura / gradient background */
+/* Fonts & Layout */
 body {
   margin: 0;
   font-family: -apple-system, SF Pro, sans-serif;
-  background: linear-gradient(160deg, #0f0c29, #302b63, #24243e);
-  color: white;
-  height: 100vh;
   overflow: hidden;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: black;
 }
 
 #container {
   width: 100%;
-  height: 100%;
-  max-width: 450px; /* simulates 9:16 on desktop */
-  margin: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  backdrop-filter: blur(5px);
+  max-width: 450px; /* 9:16 aspect ratio */
+  height: 800px;
+  position: relative;
+  overflow: hidden;
   border-radius: 20px;
-  padding: 20px;
-  box-shadow: 0 0 60px rgba(255,255,255,0.1);
+}
+
+/* Glassmorphism panels */
+.glass-panel {
+  backdrop-filter: blur(15px);
+  background: rgba(20,20,30,0.6);
+  border-radius: 20px;
+  padding: 15px;
+  margin: 10px;
+  box-shadow: 0 0 20px rgba(0,255,255,0.2);
+  color: white;
 }
 
 /* Header */
+header {
+  position: relative;
+  text-align: center;
+  z-index: 2;
+}
+
 header h1 {
-  font-style: italic;
   font-size: 2em;
-  margin-bottom: 5px;
-  text-shadow: 0 0 15px #fff, 0 0 30px #9b59b6;
+  font-style: italic;
+  text-shadow: 0 0 10px #00f, 0 0 20px #0ff;
 }
 
 /* Menu Buttons */
 .menu-btn {
-  padding: 15px 30px;
-  margin: 10px;
+  padding: 12px 25px;
+  margin: 5px;
   font-size: 16px;
-  border: 2px solid #fff;
-  background: rgba(255,255,255,0.05);
-  color: white;
-  border-radius: 15px;
-  backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
+  border-radius: 12px;
+  border: 1px solid #0ff;
+  background: rgba(0,0,50,0.3);
+  color: #0ff;
   cursor: pointer;
+  transition: all 0.3s ease;
+  text-shadow: 0 0 8px #0ff;
 }
 
 .menu-btn:hover {
-  transform: scale(1.05);
-  background: rgba(255,255,255,0.2);
-  text-shadow: 0 0 10px #9b59b6;
+  transform: scale(1.1);
+  box-shadow: 0 0 20px #0ff;
 }
 
 /* Inventory Panel */
 .panel {
   position: absolute;
-  top: 10%;
+  top: 20%;
   left: 50%;
   transform: translateX(-50%);
   width: 90%;
-  padding: 20px;
-  background: rgba(20,20,30,0.8);
-  border-radius: 20px;
-  backdrop-filter: blur(15px);
-  box-shadow: 0 0 30px #9b59b6;
   text-align: center;
+  z-index: 3;
 }
 
 .hidden {
@@ -71,19 +78,63 @@ header h1 {
 }
 
 .charm-box {
-  padding: 15px;
-  margin: 10px;
-  border-radius: 15px;
-  cursor: pointer;
+  padding: 12px;
+  margin: 8px;
+  border-radius: 12px;
   font-weight: bold;
+  cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.normal { background: #7f8c8d; }
+.normal { background: #2980b9; }
 .super { background: #8e44ad; }
 .ultra { background: #e74c3c; }
 
 .charm-box:hover {
   transform: scale(1.1);
-  box-shadow: 0 0 20px #fff;
+  box-shadow: 0 0 15px #0ff;
+}
+
+/* Map */
+#map {
+  position: relative;
+  width: 90%;
+  height: 300px;
+  margin: 20px auto;
+  border-radius: 20px;
+  background: rgba(0,0,0,0.3);
+  box-shadow: 0 0 15px #0ff;
+  overflow: hidden;
+  z-index: 2;
+}
+
+/* Player Dot */
+#player-dot {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: #0ff;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 15px #0ff, 0 0 30px #00f;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  50% { transform: translate(-50%, -50%) scale(1.3); opacity: 0.7; }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+/* Ping Timer */
+#ping-timer {
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.2em;
+  text-align: center;
+  z-index: 3;
 }
