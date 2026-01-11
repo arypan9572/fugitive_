@@ -1,19 +1,37 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Fugitive</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Fugitive</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
+<div id="container">
 
-<h1>FUGITIVE</h1>
+  <!-- Header -->
+  <header>
+    <h1>FUGITIVE</h1>
+    <p id="roleDisplay">Select your role</p>
+  </header>
 
-<div id="menu">
-  <button onclick="hostGame()">Host Game</button>
-  <button onclick="joinGame()">Join Game</button>
-  <button onclick="openInventory()">Inventory</button>
+  <!-- Menu -->
+  <div id="menu">
+    <button class="menu-btn" onclick="hostGame()">Host Game</button>
+    <button class="menu-btn" onclick="joinGame()">Join Game</button>
+    <button class="menu-btn" onclick="openInventory()">Inventory</button>
+  </div>
+
+  <!-- Inventory Panel -->
+  <div id="inventory" class="panel hidden">
+    <h2>Inventory / Charm Boxes</h2>
+    <div class="charm-box normal">Normal Box</div>
+    <div class="charm-box super">Super Box</div>
+    <div class="charm-box ultra">Ultra Box</div>
+    <button onclick="closeInventory()">Close</button>
+  </div>
+
 </div>
- 
 <script src="app.js"></script>
 </body>
 </html>
