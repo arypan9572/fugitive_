@@ -1,14 +1,17 @@
-let xp = localStorage.getItem("xp") || 0;
-localStorage.setItem("xp", xp);
-
 function hostGame() {
-  window.location.href = "game.html?role=cop";
+  document.getElementById("roleDisplay").innerText = "🚓 COP - Hosting Game";
+  alert("Hosting Game - map and mechanics coming next!");
 }
 
 function joinGame() {
-  window.location.href = "game.html?role=fugitive";
+  document.getElementById("roleDisplay").innerText = "🏃 FUGITIVE - Joining Game";
+  alert("Joining Game - map and mechanics coming next!");
 }
 
 function openInventory() {
-  alert("XP: " + xp + "\n(Charms coming soon)");
+  document.getElementById("inventory").classList.remove("hidden");
+}
+
+function closeInventory() {
+  document.getElementById("inventory").classList.add("hidden");
 }
