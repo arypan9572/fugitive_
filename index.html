@@ -5,34 +5,31 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fugitive</title>
 
-<!-- SF Pro Display from CDN -->
-<link href="https://fonts.cdnfonts.com/css/sf-pro-display" rel="stylesheet">:contentReference[oaicite:3]{index=3}
+<!-- SF Pro Display CDN -->
+<link href="https://fonts.cdnfonts.com/css/sf-pro-display" rel="stylesheet">
 
 <style>
-/* Apple‑style font usage */
-body, button, input, p, h1, h2 {
+/* ---------- FONT & BASIC ---------- */
+body, button, input, h1, h2, p {
   font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-}
-
-/* Dark background */
-body {
-  margin: 0;
-  overflow: hidden;
+  margin: 0; padding: 0;
   background: #0d0d0d;
   color: #fff;
-  display: flex;
-  justify-content: center;
+  overflow: hidden;
 }
-
-/* 9:16 container */
 #app-container {
   width: 100%;
   max-width: 450px;
   height: 800px;
   position: relative;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
 }
 
-/* Header */
+/* ---------- HEADER ---------- */
 header {
   text-align: center;
   margin-top: 20px;
@@ -40,16 +37,43 @@ header {
 header h1 {
   font-size: 2.8em;
   font-weight: 700;
-  margin: 0;
-  letter-spacing: 1.2px;
+  margin-bottom: 4px;
 }
 header p {
   font-size: 1em;
   color: #ccc;
-  margin: 4px;
 }
 
-/* Glass‑style panel */
+/* ---------- MENU ---------- */
+#menu-bar {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.menu-btn {
+  padding: 8px 14px;
+  border-radius: 12px;
+  border: none;
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  transition: all 0.25s ease;
+}
+.menu-btn:hover {
+  background: rgba(255,255,255,0.15);
+  transform: scale(1.05);
+}
+.menu-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ---------- PANELS ---------- */
 .panel {
   backdrop-filter: blur(18px);
   background: rgba(30,30,30,0.55);
@@ -60,33 +84,7 @@ header p {
   transition: all 0.3s ease;
 }
 
-/* Top right menu */
-#menu-bar {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.menu-btn {
-  padding: 8px 14px;
-  border-radius: 12px;
-  border: none;
-  background: rgba(255,255,255,0.08);
-  color: #fff;
-  font-weight: 600;
-  cursor: pointer;
-  backdrop-filter: blur(12px);
-  transition: background 0.25s ease, transform 0.25s ease;
-}
-.menu-btn:hover {
-  background: rgba(255,255,255,0.15);
-  transform: scale(1.05);
-}
-
-/* Map */
+/* ---------- MAP ---------- */
 #map {
   position: absolute;
   top: 110px;
@@ -99,8 +97,6 @@ header p {
   overflow: hidden;
   backdrop-filter: blur(10px);
 }
-
-/* Apple Maps‑style blue dot */
 #player-dot {
   position: absolute;
   width: 16px;
@@ -109,7 +105,7 @@ header p {
   background: #007AFF;
   top: 50%;
   left: 50%;
-  transform: translate(-50%,-50%);
+  transform: translate(-50%, -50%);
   box-shadow: 0 0 6px rgba(0,122,255,0.3);
 }
 #player-dot::after {
@@ -119,24 +115,23 @@ header p {
   height: 32px;
   top: 50%;
   left: 50%;
-  transform: translate(-50%,-50%);
+  transform: translate(-50%, -50%);
   background: rgba(0,122,255,0.1);
   border-radius: 50%;
   animation: pulse 2s infinite;
 }
-
 @keyframes pulse {
   0% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
   50% { transform: translate(-50%, -50%) scale(1.4); opacity: 0.25; }
   100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
 }
 
-/* Inventory & Shop panels */
+/* ---------- OVERLAY PANELS ---------- */
 .overlay-panel {
   position: absolute;
   top: 130px;
   left: 50%;
-  transform: translateX(-50%) scale(0.9);
+  transform: translateX(-50%) scale(0.95);
   width: 90%;
   backdrop-filter: blur(20px);
   background: rgba(30,30,30,0.75);
@@ -144,9 +139,13 @@ header p {
   padding: 18px;
   z-index: 20;
   display: none;
+  transition: all 0.3s ease;
+}
+.overlay-panel h2 {
+  margin-bottom: 12px;
 }
 
-/* Charm box buttons */
+/* ---------- INVENTORY & SHOP ---------- */
 .charm-box {
   display: inline-block;
   padding: 10px 14px;
@@ -161,7 +160,29 @@ header p {
 .charm-box.ultra { background:#FF3B30; color:#fff; }  /* Red */
 .charm-box:hover  { transform: scale(1.1); }
 
-/* Ping timer */
+/* ---------- HOST / JOIN ---------- */
+#host-join-panel {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+#host-join-panel input {
+  padding: 6px 10px;
+  border-radius: 10px;
+  border: none;
+  width: 60%;
+  text-align: center;
+  font-family: inherit;
+  font-size: 1em;
+}
+
+/* ---------- PING TIMER ---------- */
 #ping-timer {
   position: absolute;
   bottom: 8%;
@@ -180,19 +201,19 @@ header p {
 <body>
 <div id="app-container">
 
-  <!-- Header -->
+  <!-- HEADER -->
   <header>
     <h1>FUGITIVE</h1>
     <p id="roleDisplay">Select your role</p>
   </header>
 
-  <!-- Menu (top right) -->
+  <!-- MENU -->
   <div id="menu-bar">
     <button class="menu-btn" id="inventoryBtn">Inventory</button>
     <button class="menu-btn" id="shopBtn">Shop</button>
   </div>
 
-  <!-- Map -->
+  <!-- MAP -->
   <div id="map">
     <div id="player-dot"></div>
   </div>
@@ -214,49 +235,99 @@ header p {
     <button class="menu-btn" id="closeShop">Close</button>
   </div>
 
-  <!-- Ping Timer -->
+  <!-- HOST / JOIN PANEL -->
+  <div id="host-join-panel">
+    <button class="menu-btn" id="hostBtn">Host Game</button>
+    <div style="display:flex; gap:10px;">
+      <input type="text" id="joinCodeInput" placeholder="Enter Room Code">
+      <button class="menu-btn" id="joinBtn">Join Game</button>
+    </div>
+    <button class="menu-btn" id="startBtn" disabled>Start Game</button>
+  </div>
+
+  <!-- PING TIMER -->
   <div id="ping-timer">Ping in: <span id="ping-count">20:00</span></div>
 
 </div>
 
 <script>
-// Timer
-let pingSeconds = 20 * 60;
-setInterval(() => {
-  if (pingSeconds > 0) pingSeconds--;
-  const m = Math.floor(pingSeconds/60).toString().padStart(2,'0');
-  const s = (pingSeconds % 60).toString().padStart(2,'0');
-  document.getElementById("ping-count").innerText = `${m}:${s}`;
-}, 1000);
-
-// Panels toggle
+// -------- PANEL TOGGLE ----------
 const invPanel = document.getElementById("inventory-panel");
 const shopPanel = document.getElementById("shop-panel");
-document.getElementById("inventoryBtn").onclick = () => {
-  invPanel.style.display = "block"; shopPanel.style.display = "none";
-  invPanel.style.transform = "translateX(-50%) scale(1)";
-};
-document.getElementById("shopBtn").onclick = () => {
-  shopPanel.style.display = "block"; invPanel.style.display = "none";
-  shopPanel.style.transform = "translateX(-50%) scale(1)";
-};
-document.getElementById("closeInventory").onclick = () => invPanel.style.display = "none";
-document.getElementById("closeShop").onclick = () => shopPanel.style.display = "none";
+document.getElementById("inventoryBtn").onclick = () => { invPanel.style.display="block"; shopPanel.style.display="none"; invPanel.style.transform="translateX(-50%) scale(1)"; }
+document.getElementById("shopBtn").onclick = () => { shopPanel.style.display="block"; invPanel.style.display="none"; shopPanel.style.transform="translateX(-50%) scale(1)"; }
+document.getElementById("closeInventory").onclick = () => invPanel.style.display="none";
+document.getElementById("closeShop").onclick = () => shopPanel.style.display="none";
 
-// Player movement
+// -------- PLAYER DOT MOVEMENT ----------
 const player = document.getElementById("player-dot");
 let posX = 216, posY = 142;
 const speed = 3;
 const map = document.getElementById("map");
 document.addEventListener('keydown', (e) => {
   const rect = map.getBoundingClientRect();
-  if (e.key === 'ArrowUp' || e.key === 'w') posY = Math.max(0, posY - speed);
-  if (e.key === 'ArrowDown' || e.key === 's') posY = Math.min(rect.height - 18, posY + speed);
-  if (e.key === 'ArrowLeft' || e.key === 'a') posX = Math.max(0, posX - speed);
-  if (e.key === 'ArrowRight' || e.key === 'd') posX = Math.min(rect.width - 18, posX + speed);
-  player.style.left = posX + 'px';
-  player.style.top = posY + 'px';
+  if (e.key==='ArrowUp'||e.key==='w') posY=Math.max(0,posY-speed);
+  if (e.key==='ArrowDown'||e.key==='s') posY=Math.min(rect.height-16,posY+speed);
+  if (e.key==='ArrowLeft'||e.key==='a') posX=Math.max(0,posX-speed);
+  if (e.key==='ArrowRight'||e.key==='d') posX=Math.min(rect.width-16,posX+speed);
+  player.style.left = posX+'px';
+  player.style.top = posY+'px';
 });
+
+// -------- PING TIMER ----------
+let pingSeconds = 20*60;
+setInterval(()=>{
+  if(pingSeconds>0) pingSeconds--;
+  const m = Math.floor(pingSeconds/60).toString().padStart(2,'0');
+  const s = (pingSeconds%60).toString().padStart(2,'0');
+  document.getElementById("ping-count").innerText = `${m}:${s}`;
+},1000);
+
+// -------- HOST / JOIN LOGIC ----------
+let players = [];
+let roomCode = "";
+
+function generateCode(length=4){
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let code = "";
+  for(let i=0;i<length;i++) code+=chars.charAt(Math.floor(Math.random()*chars.length));
+  return code;
+}
+
+const hostBtn = document.getElementById("hostBtn");
+const joinBtn = document.getElementById("joinBtn");
+const joinInput = document.getElementById("joinCodeInput");
+const startBtn = document.getElementById("startBtn");
+
+hostBtn.onclick = ()=>{
+  roomCode = generateCode();
+  alert("Room Code: " + roomCode);
+  players = ["Host"];
+  updateStartButton();
+}
+
+joinBtn.onclick = ()=>{
+  const code = joinInput.value.toUpperCase();
+  if(code===roomCode){
+    const name = "Player" + (players.length+1);
+    players.push(name);
+    alert(`${name} joined the room!`);
+    updateStartButton();
+  } else {
+    alert("Wrong code!");
+  }
+}
+
+function updateStartButton(){
+  if(players.length>=3) startBtn.disabled = false;
+  else startBtn.disabled = true;
+}
+
+startBtn.onclick = ()=>{
+  if(players.length>=3) alert("Game Starting with " + players.join(", "));
+  else alert("Need at least 3 players to start");
+}
+
 </script>
 
 </body>
