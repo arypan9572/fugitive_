@@ -3,91 +3,98 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fugitive</title>
+<title>Fugitive - Apple Style UI</title>
 <style>
-/* Dark background & general */
+/* Global Dark Theme */
 body {
   margin:0;
   overflow:hidden;
-  font-family:-apple-system, "SF Pro", sans-serif;
+  font-family:-apple-system, "SF Pro Display", "SF Pro", sans-serif;
   background:#0a0a0a;
-  color:#ccc;
+  color:#f5f5f5;
 }
+
+/* Aurora background */
 canvas { position:absolute; top:0; left:0; width:100%; height:100%; z-index:0; }
 
-/* Keyframes for animations */
-@keyframes pulse { 0%{transform:translate(-50%,-50%) scale(1);opacity:1;} 50%{transform:translate(-50%,-50%) scale(1.3);opacity:0.7;} 100%{transform:translate(-50%,-50%) scale(1);opacity:1;} }
+/* Animations */
 @keyframes fadeIn { 0%{opacity:0;} 100%{opacity:1;} }
-@keyframes zoomIn { 0%{transform:scale(0.7);} 100%{transform:scale(1);} }
-@keyframes glowHover { 0%{box-shadow:0 0 10px #0ff;} 50%{box-shadow:0 0 25px #0ff;} 100%{box-shadow:0 0 10px #0ff;} }
+@keyframes zoomIn { 0%{transform:scale(0.85);} 100%{transform:scale(1);} }
+@keyframes pulse { 0%{transform:scale(1);opacity:1;}50%{transform:scale(1.2);opacity:0.7;}100%{transform:scale(1);opacity:1;} }
 
-/* Header & title */
-header { text-align:center; margin-top:20px; z-index:2; animation:fadeIn 1.5s ease; }
+/* Header / Logo */
+header {
+  text-align:center;
+  margin-top:25px;
+  animation:fadeIn 1.5s ease;
+}
 header h1 {
-  font-family: 'SF Pro', sans-serif;
+  font-family:-apple-system, "SF Pro Display", "SF Pro", sans-serif;
   font-size:2.8em;
-  font-weight:700;
+  font-weight:600;
   font-style:italic;
   color:#0ff;
-  text-shadow:0 0 10px #0ff, 0 0 25px #0ff, 0 0 50px #00f;
-  letter-spacing:2px;
-  animation:zoomIn 1s ease forwards;
+  text-shadow:0 0 8px #0ff, 0 0 20px #00f;
+  letter-spacing:1.5px;
+  animation:zoomIn 1s ease;
 }
 header p {
-  font-family:'SF Pro', sans-serif;
+  font-family:-apple-system, "SF Pro Display", "SF Pro", sans-serif;
+  font-weight:400;
   font-size:1em;
-  color:#aaa;
+  color:#ccc;
   letter-spacing:0.5px;
 }
 
-/* Panels */
+/* Apple-like Panel */
 .panel {
-  backdrop-filter:blur(20px);
-  background:rgba(10,10,20,0.75);
-  border-radius:20px;
+  backdrop-filter:blur(25px);
+  background:rgba(20,20,30,0.55);
+  border-radius:22px;
   padding:20px;
-  margin:10px;
-  box-shadow:0 0 30px rgba(0,255,255,0.3);
-  color:#ccc;
+  margin:12px;
+  box-shadow:0 4px 20px rgba(0,255,255,0.2);
+  color:#f5f5f5;
   animation:fadeIn 1s ease;
 }
 
 /* Buttons */
 button {
-  padding:12px 28px;
-  margin:6px;
-  border-radius:12px;
-  border:1px solid #0ff;
-  background:rgba(0,0,30,0.4);
+  padding:14px 28px;
+  margin:8px;
+  border-radius:16px;
+  border:none;
+  background:rgba(255,255,255,0.05);
   color:#0ff;
+  font-family:-apple-system, "SF Pro Display", "SF Pro", sans-serif;
   font-weight:600;
-  font-family:'SF Pro', sans-serif;
   cursor:pointer;
-  text-shadow:0 0 10px #0ff;
   transition:all 0.3s ease;
+  backdrop-filter:blur(10px);
+  box-shadow:0 2px 10px rgba(0,255,255,0.2);
 }
 button:hover {
-  transform:scale(1.15);
-  animation:glowHover 1s infinite;
+  background:rgba(0,255,255,0.08);
+  transform:scale(1.08);
 }
 
-/* Inventory boxes */
+/* Inventory / Charm Boxes */
 .charm-box {
   display:inline-block;
-  padding:12px;
+  padding:12px 18px;
   margin:8px;
   border-radius:14px;
   font-weight:600;
   cursor:pointer;
-  transition:all 0.5s ease;
-  font-family:'SF Pro', sans-serif;
+  font-family:-apple-system, "SF Pro Display", "SF Pro", sans-serif;
   color:#fff;
-  text-shadow:0 0 5px #0ff;
+  text-shadow:0 0 4px #0ff;
+  transition: all 0.4s ease;
 }
-.charm-box.normal { background:#1a3f7a; }
-.charm-box.super { background:#5b2a72; }
-.charm-box.ultra { background:#a62030; }
-.charm-box:hover { transform:scale(1.4); box-shadow:0 0 30px #0ff,0 0 60px #00f; }
+.charm-box.normal { background:#1f3f7a; }
+.charm-box.super { background:#7a2a7a; }
+.charm-box.ultra { background:#c02030; }
+.charm-box:hover { transform:scale(1.25); box-shadow:0 0 20px #0ff,0 0 35px #00f; }
 
 /* Map */
 #map {
@@ -96,8 +103,8 @@ button:hover {
   height:300px;
   margin:20px auto;
   border-radius:20px;
-  background:rgba(0,0,0,0.25);
-  box-shadow:0 0 25px #0ff;
+  background:rgba(0,0,0,0.3);
+  box-shadow:0 0 20px rgba(0,255,255,0.2);
   overflow:hidden;
   z-index:2;
 }
@@ -112,50 +119,47 @@ button:hover {
   top:50%;
   left:50%;
   transform:translate(-50%,-50%);
-  box-shadow:0 0 20px #0ff,0 0 40px #00f;
+  box-shadow:0 0 15px #0ff,0 0 30px #00f;
   animation:pulse 2s infinite;
 }
 
-/* Ping timer */
+/* Ping Timer */
 #ping-timer {
   position:absolute;
   bottom:8%;
   left:50%;
   transform:translateX(-50%);
-  font-size:1.3em;
+  font-size:1.2em;
   padding:6px 12px;
   backdrop-filter:blur(12px);
-  background:rgba(0,0,30,0.5);
+  background:rgba(0,0,0,0.4);
   border-radius:15px;
   color:#0ff;
   text-align:center;
-  box-shadow:0 0 20px #0ff;
-  animation:fadeIn 2s ease;
+  box-shadow:0 0 15px #0ff;
+  animation:fadeIn 1.5s ease;
 }
 </style>
 </head>
 <body>
 
-<!-- Aurora background -->
+<!-- Aurora Background -->
 <canvas id="aurora"></canvas>
 
 <div style="position:relative; width:100%; max-width:450px; height:800px; margin:auto; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; z-index:1;">
 
-<!-- Header -->
 <header>
   <h1>FUGITIVE</h1>
   <p id="roleDisplay">Select your role</p>
 </header>
 
-<!-- Menu -->
 <div class="panel">
   <button id="hostBtn">Host Game</button>
   <button id="joinBtn">Join Game</button>
   <button id="inventoryBtn">Inventory</button>
 </div>
 
-<!-- Inventory -->
-<div id="inventory" class="panel" style="position:absolute; top:20%; left:50%; transform:translateX(-50%) scale(0.9); display:none;">
+<div id="inventory" class="panel" style="position:absolute; top:18%; left:50%; transform:translateX(-50%) scale(0.95); display:none;">
   <h2>Inventory / Charm Boxes</h2>
   <div class="charm-box normal">Normal Box</div>
   <div class="charm-box super">Super Box</div>
@@ -164,18 +168,15 @@ button:hover {
   <button id="closeInventory">Close</button>
 </div>
 
-<!-- Map -->
 <div id="map">
   <div id="player-dot"></div>
 </div>
 
-<!-- Ping timer -->
 <div id="ping-timer">Ping in: <span id="ping-count">20:00</span></div>
-
 </div>
 
 <script>
-// Aurora background
+// Aurora
 const canvas=document.getElementById("aurora");
 canvas.width=canvas.offsetWidth; canvas.height=canvas.offsetHeight;
 const ctx=canvas.getContext("2d");
@@ -189,7 +190,7 @@ function drawAurora(){
   grad.addColorStop(1,'#000010');
   ctx.fillStyle=grad;
   ctx.fillRect(0,0,canvas.width,canvas.height);
-  gradientOffset+=0.5;
+  gradientOffset+=0.4;
   if(gradientOffset>canvas.height) gradientOffset=0;
   requestAnimationFrame(drawAurora);
 }
@@ -208,13 +209,13 @@ setInterval(()=>{
 document.getElementById("inventoryBtn").onclick=()=>{ 
   const inv=document.getElementById("inventory");
   inv.style.display="block";
-  inv.style.transition="all 0.5s ease";
+  inv.style.transition="all 0.4s ease";
   inv.style.transform="translateX(-50%) scale(1)";
 };
 document.getElementById("closeInventory").onclick=()=>{
   const inv=document.getElementById("inventory");
-  inv.style.transform="translateX(-50%) scale(0.9)";
-  setTimeout(()=>{ inv.style.display="none"; },500);
+  inv.style.transform="translateX(-50%) scale(0.95)";
+  setTimeout(()=>{ inv.style.display="none"; },400);
 };
 
 // Role selection
@@ -239,9 +240,9 @@ document.addEventListener('keydown',(e)=>{
 // Charm box animation
 document.querySelectorAll('.charm-box').forEach(charm=>{
   charm.onclick=()=>{
-    charm.style.transform="scale(1.6)";
-    charm.style.boxShadow="0 0 30px #fff,0 0 60px #0ff";
-    setTimeout(()=>{ charm.style.transform="scale(1)"; charm.style.boxShadow="0 0 25px #0ff"; },800);
+    charm.style.transform="scale(1.4)";
+    charm.style.boxShadow="0 0 25px #0ff,0 0 50px #00f";
+    setTimeout(()=>{ charm.style.transform="scale(1)"; charm.style.boxShadow="0 0 20px #0ff"; },800);
   };
 });
 </script>
