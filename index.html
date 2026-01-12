@@ -3,113 +3,102 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fugitive - Apple Style UI</title>
+<title>Fugitive</title>
+
 <style>
-/* Global Dark Theme */
-body {
-  margin:0;
-  overflow:hidden;
-  font-family:-apple-system, "SF Pro Display", "SF Pro", "Helvetica Neue", sans-serif;
-  background:#0a0a0a;
-  color:#f5f5f5;
+/* Embed SF Pro Semibold */
+@font-face {
+  font-family: 'SFPro';
+  src: url('SF-Pro-Semibold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
 }
 
-/* Aurora background */
-canvas { position:absolute; top:0; left:0; width:100%; height:100%; z-index:0; }
+/* Global Apple-style dark theme */
+body {
+  margin:0;
+  font-family: 'SFPro', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background:#121212;
+  color:#ffffff;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  min-height:100vh;
+}
 
-/* Animations */
-@keyframes fadeIn { 0%{opacity:0;} 100%{opacity:1;} }
-@keyframes zoomIn { 0%{transform:scale(0.85);} 100%{transform:scale(1);} }
-@keyframes pulse { 0%{transform:scale(1);opacity:0.6;}50%{transform:scale(1.4);opacity:0.25;}100%{transform:scale(1);opacity:0.6;} }
-
-/* Header / Logo */
+/* Header / Title */
 header {
   text-align:center;
   margin-top:25px;
-  animation:fadeIn 1.5s ease;
 }
 header h1 {
-  font-family:-apple-system, "SF Pro Display", "SF Pro", "Helvetica Neue", sans-serif;
-  font-size:2.8em;
   font-weight:600; /* semibold */
-  font-style:normal; /* NOT italic */
-  color:#0ff;
-  text-shadow:0 0 8px #0ff, 0 0 20px #00f;
-  letter-spacing:1.5px;
-  animation:zoomIn 1s ease;
+  font-style:normal; /* not italic */
+  font-size:2.8em;
+  color:#ffffff;
+  letter-spacing:1px;
 }
 header p {
-  font-family:-apple-system, "SF Pro Display", "SF Pro", "Helvetica Neue", sans-serif;
   font-weight:400;
   font-size:1em;
   color:#ccc;
-  letter-spacing:0.5px;
 }
 
-/* Apple-like Panel */
+/* Panel styling - Apple blur style */
 .panel {
-  backdrop-filter:blur(25px);
-  background:rgba(20,20,30,0.55);
-  border-radius:22px;
+  backdrop-filter:blur(20px);
+  background:rgba(30,30,30,0.7);
+  border-radius:20px;
   padding:20px;
   margin:12px;
-  box-shadow:0 4px 20px rgba(0,255,255,0.2);
-  color:#f5f5f5;
-  animation:fadeIn 1s ease;
+  box-shadow:0 4px 12px rgba(0,0,0,0.3);
 }
 
 /* Buttons */
 button {
-  padding:14px 28px;
+  padding:12px 28px;
   margin:8px;
-  border-radius:16px;
+  border-radius:12px;
   border:none;
-  background:rgba(255,255,255,0.05);
-  color:#0ff;
-  font-family:-apple-system, "SF Pro Display", "SF Pro", "Helvetica Neue", sans-serif;
+  background:rgba(255,255,255,0.08);
+  color:#fff;
   font-weight:600;
   cursor:pointer;
-  transition:all 0.3s ease;
+  transition:all 0.25s ease;
   backdrop-filter:blur(10px);
-  box-shadow:0 2px 10px rgba(0,255,255,0.2);
 }
 button:hover {
-  background:rgba(0,255,255,0.08);
-  transform:scale(1.08);
+  background:rgba(255,255,255,0.15);
+  transform:scale(1.05);
 }
 
 /* Inventory / Charm Boxes */
 .charm-box {
   display:inline-block;
-  padding:12px 18px;
-  margin:8px;
-  border-radius:14px;
+  padding:10px 14px;
+  margin:6px;
+  border-radius:12px;
   font-weight:600;
   cursor:pointer;
-  font-family:-apple-system, "SF Pro Display", "SF Pro", "Helvetica Neue", sans-serif;
+  transition:all 0.3s ease;
+  background:rgba(255,255,255,0.1);
   color:#fff;
-  text-shadow:0 0 4px #0ff;
-  transition: all 0.4s ease;
 }
-.charm-box.normal { background:#1f3f7a; }
-.charm-box.super { background:#7a2a7a; }
-.charm-box.ultra { background:#c02030; }
-.charm-box:hover { transform:scale(1.25); box-shadow:0 0 20px #0ff,0 0 35px #00f; }
+.charm-box:hover { transform:scale(1.1); }
 
-/* Map */
+/* Map container */
 #map {
   position:relative;
   width:90%;
   height:300px;
   margin:20px auto;
   border-radius:20px;
-  background:rgba(0,0,0,0.3);
-  box-shadow:0 0 20px rgba(0,255,255,0.2);
+  background:rgba(40,40,40,0.6);
   overflow:hidden;
-  z-index:2;
 }
 
-/* Apple Maps style location dot */
+/* Apple Maps-style blue dot */
 #player-dot {
   position:absolute;
   width:18px;
@@ -118,23 +107,25 @@ button:hover {
   left:50%;
   transform:translate(-50%,-50%);
   border-radius:50%;
-  background:white; /* center dot */
-  box-shadow:
-    0 0 8px #0ff, /* inner glow halo */
-    0 0 20px rgba(0,255,255,0.5),
-    0 0 30px rgba(0,255,255,0.25);
+  background:#007AFF; /* Apple Maps blue */
+  box-shadow:0 0 8px rgba(0,122,255,0.3),0 0 16px rgba(0,122,255,0.2);
 }
 #player-dot::after {
   content:"";
   position:absolute;
-  width:40px;
-  height:40px;
+  width:36px;
+  height:36px;
   top:50%;
   left:50%;
   transform:translate(-50%,-50%);
   border-radius:50%;
-  background:rgba(0,255,255,0.1);
+  background:rgba(0,122,255,0.1);
   animation:pulse 2s infinite;
+}
+@keyframes pulse {
+  0%{transform:translate(-50%,-50%) scale(1); opacity:0.6;}
+  50%{transform:translate(-50%,-50%) scale(1.4); opacity:0.25;}
+  100%{transform:translate(-50%,-50%) scale(1); opacity:0.6;}
 }
 
 /* Ping Timer */
@@ -146,21 +137,16 @@ button:hover {
   font-size:1.2em;
   padding:6px 12px;
   backdrop-filter:blur(12px);
-  background:rgba(0,0,0,0.4);
+  background:rgba(30,30,30,0.7);
   border-radius:15px;
-  color:#0ff;
+  color:#ffffff;
   text-align:center;
-  box-shadow:0 0 15px #0ff;
-  animation:fadeIn 1.5s ease;
+  box-shadow:0 2px 10px rgba(0,0,0,0.3);
 }
 </style>
 </head>
+
 <body>
-
-<!-- Aurora Background -->
-<canvas id="aurora"></canvas>
-
-<div style="position:relative; width:100%; max-width:450px; height:800px; margin:auto; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; z-index:1;">
 
 <header>
   <h1>FUGITIVE</h1>
@@ -187,29 +173,8 @@ button:hover {
 </div>
 
 <div id="ping-timer">Ping in: <span id="ping-count">20:00</span></div>
-</div>
 
 <script>
-// Aurora
-const canvas=document.getElementById("aurora");
-canvas.width=canvas.offsetWidth; canvas.height=canvas.offsetHeight;
-const ctx=canvas.getContext("2d");
-let gradientOffset=0;
-function drawAurora(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  const grad=ctx.createLinearGradient(0,gradientOffset,canvas.width,canvas.height+gradientOffset);
-  grad.addColorStop(0,'#000010');
-  grad.addColorStop(0.3,'#001f2f');
-  grad.addColorStop(0.6,'#004080');
-  grad.addColorStop(1,'#000010');
-  ctx.fillStyle=grad;
-  ctx.fillRect(0,0,canvas.width,canvas.height);
-  gradientOffset+=0.4;
-  if(gradientOffset>canvas.height) gradientOffset=0;
-  requestAnimationFrame(drawAurora);
-}
-drawAurora();
-
 // Ping timer
 let pingSeconds=20*60;
 setInterval(()=>{
@@ -250,15 +215,7 @@ document.addEventListener('keydown',(e)=>{
   player.style.left=posX+'px';
   player.style.top=posY+'px';
 });
-
-// Charm box animation
-document.querySelectorAll('.charm-box').forEach(charm=>{
-  charm.onclick=()=>{
-    charm.style.transform="scale(1.4)";
-    charm.style.boxShadow="0 0 25px #0ff,0 0 50px #00f";
-    setTimeout(()=>{ charm.style.transform="scale(1)"; charm.style.boxShadow="0 0 20px #0ff"; },800);
-  };
-});
 </script>
+
 </body>
 </html>
