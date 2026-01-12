@@ -6,7 +6,7 @@
 <title>Fugitive</title>
 
 <style>
-/* Embed SF Pro Semibold */
+/* Embed SF Pro Semibold - make sure SF-Pro-Semibold.ttf is in same folder */
 @font-face {
   font-family: 'SFPro';
   src: url('SF-Pro-Semibold.ttf') format('truetype');
@@ -14,10 +14,10 @@
   font-style: normal;
 }
 
-/* Global Apple-style dark theme */
+/* Global Dark Apple Theme */
 body {
   margin:0;
-  font-family: 'SFPro', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family:'SFPro', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   background:#121212;
   color:#ffffff;
   display:flex;
@@ -25,24 +25,41 @@ body {
   align-items:center;
   justify-content:flex-start;
   min-height:100vh;
+  width:100vw;
+  overflow:hidden;
+}
+
+/* 9:16 Aspect ratio container */
+#app-container {
+  position:relative;
+  width:100%;
+  max-width:450px;
+  height:800px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
 }
 
 /* Header / Title */
 header {
   text-align:center;
-  margin-top:25px;
+  margin-top:20px;
 }
 header h1 {
-  font-weight:600; /* semibold */
-  font-style:normal; /* not italic */
+  font-family:'SFPro';
+  font-weight:600;
   font-size:2.8em;
   color:#ffffff;
   letter-spacing:1px;
+  margin:0;
 }
 header p {
+  font-family:'SFPro';
   font-weight:400;
   font-size:1em;
   color:#ccc;
+  margin-top:4px;
 }
 
 /* Panel styling - Apple blur style */
@@ -53,6 +70,7 @@ header p {
   padding:20px;
   margin:12px;
   box-shadow:0 4px 12px rgba(0,0,0,0.3);
+  font-family:'SFPro';
 }
 
 /* Buttons */
@@ -67,13 +85,25 @@ button {
   cursor:pointer;
   transition:all 0.25s ease;
   backdrop-filter:blur(10px);
+  font-family:'SFPro';
 }
 button:hover {
   background:rgba(255,255,255,0.15);
   transform:scale(1.05);
 }
 
-/* Inventory / Charm Boxes */
+/* Separate inventory and shop panels */
+#inventory-panel, #shop-panel {
+  position:absolute;
+  top:18%;
+  left:50%;
+  transform:translateX(-50%) scale(0.95);
+  display:none;
+  width:90%;
+  z-index:10; /* Above map */
+}
+
+/* Charm boxes colors */
 .charm-box {
   display:inline-block;
   padding:10px 14px;
@@ -82,9 +112,11 @@ button:hover {
   font-weight:600;
   cursor:pointer;
   transition:all 0.3s ease;
-  background:rgba(255,255,255,0.1);
-  color:#fff;
+  font-family:'SFPro';
 }
+.charm-box.normal { background:#007AFF; color:#fff; } /* Blue */
+.charm-box.super { background:#FFD60A; color:#000; }   /* Yellow */
+.charm-box.ultra { background:#FF3B30; color:#fff; }   /* Red */
 .charm-box:hover { transform:scale(1.1); }
 
 /* Map container */
@@ -92,10 +124,11 @@ button:hover {
   position:relative;
   width:90%;
   height:300px;
-  margin:20px auto;
+  margin-top:20px;
   border-radius:20px;
   background:rgba(40,40,40,0.6);
   overflow:hidden;
+  z-index:1; /* Behind panels */
 }
 
 /* Apple Maps-style blue dot */
@@ -107,8 +140,9 @@ button:hover {
   left:50%;
   transform:translate(-50%,-50%);
   border-radius:50%;
-  background:#007AFF; /* Apple Maps blue */
+  background:#007AFF;
   box-shadow:0 0 8px rgba(0,122,255,0.3),0 0 16px rgba(0,122,255,0.2);
+  font-family:'SFPro';
 }
 #player-dot::after {
   content:"";
@@ -122,6 +156,8 @@ button:hover {
   background:rgba(0,122,255,0.1);
   animation:pulse 2s infinite;
 }
+
+/* Pulse animation */
 @keyframes pulse {
   0%{transform:translate(-50%,-50%) scale(1); opacity:0.6;}
   50%{transform:translate(-50%,-50%) scale(1.4); opacity:0.25;}
@@ -142,11 +178,13 @@ button:hover {
   color:#ffffff;
   text-align:center;
   box-shadow:0 2px 10px rgba(0,0,0,0.3);
+  font-family:'SFPro';
 }
 </style>
 </head>
-
 <body>
+
+<div id="app-container">
 
 <header>
   <h1>FUGITIVE</h1>
@@ -157,15 +195,22 @@ button:hover {
   <button id="hostBtn">Host Game</button>
   <button id="joinBtn">Join Game</button>
   <button id="inventoryBtn">Inventory</button>
+  <button id="shopBtn">Shop</button>
 </div>
 
-<div id="inventory" class="panel" style="position:absolute; top:18%; left:50%; transform:translateX(-50%) scale(0.95); display:none;">
-  <h2>Inventory / Charm Boxes</h2>
+<!-- Inventory Panel -->
+<div id="inventory-panel" class="panel">
+  <h2>Inventory</h2>
   <div class="charm-box normal">Normal Box</div>
+  <button id="closeInventory">Close</button>
+</div>
+
+<!-- Shop Panel -->
+<div id="shop-panel" class="panel">
+  <h2>Shop</h2>
   <div class="charm-box super">Super Box</div>
   <div class="charm-box ultra">Ultra Box</div>
-  <br>
-  <button id="closeInventory">Close</button>
+  <button id="closeShop">Close</button>
 </div>
 
 <div id="map">
@@ -173,6 +218,8 @@ button:hover {
 </div>
 
 <div id="ping-timer">Ping in: <span id="ping-count">20:00</span></div>
+
+</div>
 
 <script>
 // Ping timer
@@ -184,18 +231,17 @@ setInterval(()=>{
   document.getElementById("ping-count").innerText=`${m}:${s}`;
 },1000);
 
-// Inventory toggle
-document.getElementById("inventoryBtn").onclick=()=>{ 
-  const inv=document.getElementById("inventory");
-  inv.style.display="block";
-  inv.style.transition="all 0.4s ease";
-  inv.style.transform="translateX(-50%) scale(1)";
-};
-document.getElementById("closeInventory").onclick=()=>{
-  const inv=document.getElementById("inventory");
-  inv.style.transform="translateX(-50%) scale(0.95)";
-  setTimeout(()=>{ inv.style.display="none"; },400);
-};
+// Inventory & Shop toggle
+const inventoryBtn=document.getElementById("inventoryBtn");
+const shopBtn=document.getElementById("shopBtn");
+const invPanel=document.getElementById("inventory-panel");
+const shopPanel=document.getElementById("shop-panel");
+
+inventoryBtn.onclick=()=>{ invPanel.style.display="block"; shopPanel.style.display="none"; invPanel.style.transform="translateX(-50%) scale(1)"; };
+shopBtn.onclick=()=>{ shopPanel.style.display="block"; invPanel.style.display="none"; shopPanel.style.transform="translateX(-50%) scale(1)"; };
+
+document.getElementById("closeInventory").onclick=()=>{ invPanel.style.transform="translateX(-50%) scale(0.95)"; setTimeout(()=>{ invPanel.style.display="none"; },400); };
+document.getElementById("closeShop").onclick=()=>{ shopPanel.style.transform="translateX(-50%) scale(0.95)"; setTimeout(()=>{ shopPanel.style.display="none"; },400); };
 
 // Role selection
 document.getElementById("hostBtn").onclick=()=>{ document.getElementById("roleDisplay").innerText="🚓 COP - Hosting Game"; }
