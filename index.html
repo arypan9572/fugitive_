@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fugitive</title>
 
-<!-- SF Pro Display CDN -->
 <link href="https://fonts.cdnfonts.com/css/sf-pro-display" rel="stylesheet">
 
 <style>
@@ -35,7 +34,6 @@ header {
 header h1 {
   font-size: 2.8em;
   font-weight: 700;
-  margin-bottom: 4px;
 }
 header p {
   font-size: 1em;
@@ -62,14 +60,7 @@ header p {
   backdrop-filter: blur(12px);
   transition: all 0.25s ease;
 }
-.menu-btn:hover {
-  background: rgba(255,255,255,0.15);
-  transform: scale(1.05);
-}
-.menu-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+.menu-btn:hover { transform: scale(1.05); }
 
 /* ---------- MAP ---------- */
 #map-container {
@@ -82,8 +73,6 @@ header p {
   backdrop-filter: blur(10px);
   background: rgba(25,25,25,0.65);
 }
-
-/* Moving map background */
 #map {
   position: absolute;
   width: 200%;
@@ -94,8 +83,6 @@ header p {
   left: -50%;
   transition: transform 0.1s linear;
 }
-
-/* Fixed blue dot */
 #player-dot {
   position: absolute;
   width: 16px;
@@ -105,24 +92,6 @@ header p {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  box-shadow: 0 0 6px rgba(0,122,255,0.3);
-}
-#player-dot::after {
-  content:"";
-  position: absolute;
-  width: 32px;
-  height: 32px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: rgba(0,122,255,0.1);
-  border-radius: 50%;
-  animation: pulse 2s infinite;
-}
-@keyframes pulse {
-  0% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
-  50% { transform: translate(-50%, -50%) scale(1.4); opacity: 0.25; }
-  100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
 }
 
 /* ---------- OVERLAY PANELS ---------- */
@@ -130,21 +99,17 @@ header p {
   position: absolute;
   top: 130px;
   left: 50%;
-  transform: translateX(-50%) scale(0.95);
+  transform: translateX(-50%);
   width: 90%;
   backdrop-filter: blur(20px);
-  background: rgba(30,30,30,0.75);
+  background: rgba(30,30,30,0.8);
   border-radius: 18px;
   padding: 18px;
   z-index: 20;
   display: none;
-  transition: all 0.3s ease;
-}
-.overlay-panel h2 {
-  margin-bottom: 12px;
 }
 
-/* ---------- INVENTORY & SHOP ---------- */
+/* ---------- CHARM BOXES ---------- */
 .charm-box {
   display: inline-block;
   padding: 10px 14px;
@@ -152,33 +117,62 @@ header p {
   border-radius: 12px;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.25s ease;
 }
-.charm-box.normal { background:#007AFF; color:#fff; }
+.charm-box.normal { background:#007AFF; }
 .charm-box.super  { background:#FFD60A; color:#000; }
-.charm-box.ultra { background:#FF3B30; color:#fff; }
-.charm-box:hover  { transform: scale(1.1); }
+.charm-box.ultra  { background:#FF3B30; }
 
-/* ---------- HOST / JOIN PANEL BELOW MAP ---------- */
+/* ---------- LOOT OPEN OVERLAY (NEW) ---------- */
+#loot-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(20px);
+  display: none;
+  z-index: 50;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+#loot-box {
+  width: 140px;
+  height: 140px;
+  border-radius: 20px;
+  background: linear-gradient(145deg,#2b7cff,#0059ff);
+  box-shadow: 0 0 40px rgba(0,122,255,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: pulse 1.2s infinite;
+}
+
+#diamond-reveal {
+  display: none;
+  text-align: center;
+  animation: pop 0.6s ease forwards;
+}
+
+#diamond-reveal img {
+  width: 48px;
+  filter: drop-shadow(0 0 14px rgba(0,200,255,0.8));
+}
+
+@keyframes pop {
+  from { transform: scale(0.3); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* ---------- HOST / JOIN ---------- */
 #host-join-panel {
   width: 90%;
   margin-top: 10px;
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 10px;
 }
-#host-join-panel input {
-  padding: 6px 10px;
-  border-radius: 10px;
-  border: none;
-  width: 60%;
-  text-align: center;
-  font-family: inherit;
-  font-size: 1em;
-}
 
-/* ---------- PING TIMER ---------- */
+/* ---------- PING ---------- */
 #ping-timer {
   position: absolute;
   bottom: 15px;
@@ -187,9 +181,6 @@ header p {
   padding: 6px 12px;
   background: rgba(30,30,30,0.7);
   border-radius: 15px;
-  text-align: center;
-  font-size: 1.2em;
-  backdrop-filter: blur(10px);
 }
 </style>
 </head>
@@ -197,131 +188,88 @@ header p {
 <body>
 <div id="app-container">
 
-  <!-- HEADER -->
-  <header>
-    <h1>FUGITIVE</h1>
-    <p id="roleDisplay">Select your role</p>
-  </header>
+<header>
+  <h1>FUGITIVE</h1>
+  <p>Select your role</p>
+</header>
 
-  <!-- MENU -->
-  <div id="menu-bar">
-    <button class="menu-btn" id="inventoryBtn">Inventory</button>
-    <button class="menu-btn" id="shopBtn">Shop</button>
+<div id="menu-bar">
+  <button class="menu-btn" id="inventoryBtn">Inventory</button>
+  <button class="menu-btn" id="shopBtn">Shop</button>
+</div>
+
+<div id="map-container">
+  <div id="map"></div>
+  <div id="player-dot"></div>
+</div>
+
+<div id="host-join-panel">
+  <button class="menu-btn" id="hostBtn">Host Game</button>
+  <button class="menu-btn" id="joinBtn">Join Game</button>
+  <button class="menu-btn" id="startBtn" disabled>Start Game</button>
+</div>
+
+<div id="inventory-panel" class="overlay-panel">
+  <h2>Inventory</h2>
+  <div id="inventory-items">No items yet</div>
+  <button class="menu-btn" id="closeInventory">Close</button>
+</div>
+
+<div id="shop-panel" class="overlay-panel">
+  <h2>Charm Shop</h2>
+  <div class="charm-box normal" id="normalBox">Normal Box</div>
+  <div class="charm-box super">Super Box</div>
+  <div class="charm-box ultra">Ultra Box</div>
+  <button class="menu-btn" id="closeShop">Close</button>
+</div>
+
+<div id="ping-timer">Ping in: 20:00</div>
+
+<!-- ---------- LOOT OPEN OVERLAY ---------- -->
+<div id="loot-overlay">
+  <div id="loot-box">OPENING</div>
+  <div id="diamond-reveal">
+    <img src="assets/charms/diamond.png">
+    <p>Diamond Charm</p>
+    <button class="menu-btn" id="closeLoot">Continue</button>
   </div>
-
-  <!-- MAP -->
-  <div id="map-container">
-    <div id="map"></div>
-    <div id="player-dot"></div>
-  </div>
-
-  <!-- HOST / JOIN PANEL BELOW MAP -->
-  <div id="host-join-panel">
-    <button class="menu-btn" id="hostBtn">Host Game</button>
-    <div style="display:flex; gap:10px;">
-      <input type="text" id="joinCodeInput" placeholder="Enter Room Code">
-      <button class="menu-btn" id="joinBtn">Join Game</button>
-    </div>
-    <button class="menu-btn" id="startBtn" disabled>Start Game</button>
-  </div>
-
-  <!-- Inventory Panel -->
-  <div id="inventory-panel" class="overlay-panel">
-    <h2>Inventory</h2>
-    <p>No items yet</p>
-    <button class="menu-btn" id="closeInventory">Close</button>
-  </div>
-
-  <!-- Shop Panel -->
-  <div id="shop-panel" class="overlay-panel">
-    <h2>Charm Shop</h2>
-    <div class="charm-box normal">Normal Box</div>
-    <div class="charm-box super">Super Box</div>
-    <div class="charm-box ultra">Ultra Box</div>
-    <br>
-    <button class="menu-btn" id="closeShop">Close</button>
-  </div>
-
-  <!-- PING TIMER -->
-  <div id="ping-timer">Ping in: <span id="ping-count">20:00</span></div>
+</div>
 
 </div>
 
 <script>
-// -------- PANEL TOGGLE ----------
-const invPanel = document.getElementById("inventory-panel");
-const shopPanel = document.getElementById("shop-panel");
-document.getElementById("inventoryBtn").onclick = () => { invPanel.style.display="block"; shopPanel.style.display="none"; invPanel.style.transform="translateX(-50%) scale(1)"; }
-document.getElementById("shopBtn").onclick = () => { shopPanel.style.display="block"; invPanel.style.display="none"; shopPanel.style.transform="translateX(-50%) scale(1)"; }
-document.getElementById("closeInventory").onclick = () => invPanel.style.display="none";
-document.getElementById("closeShop").onclick = () => shopPanel.style.display="none";
+/* PANELS */
+inventoryBtn.onclick = () => inventory-panel.style.display="block"
+shopBtn.onclick = () => shop-panel.style.display="block"
+closeInventory.onclick = () => inventory-panel.style.display="none"
+closeShop.onclick = () => shop-panel.style.display="none"
 
-// -------- MAP MOVEMENT ----------
-const map = document.getElementById("map");
-let mapX = -50; // starting offset %
-let mapY = -50;
-const moveSpeed = 2;
+/* LOOT BOX LOGIC */
+const normalBox = document.getElementById("normalBox");
+const lootOverlay = document.getElementById("loot-overlay");
+const lootBox = document.getElementById("loot-box");
+const diamondReveal = document.getElementById("diamond-reveal");
+const inventoryItems = document.getElementById("inventory-items");
 
-document.addEventListener('keydown', (e)=>{
-  if(e.key==='ArrowUp'||e.key==='w') mapY += moveSpeed;
-  if(e.key==='ArrowDown'||e.key==='s') mapY -= moveSpeed;
-  if(e.key==='ArrowLeft'||e.key==='a') mapX += moveSpeed;
-  if(e.key==='ArrowRight'||e.key==='d') mapX -= moveSpeed;
-  map.style.transform = `translate(${mapX}%, ${mapY}%)`;
-});
+normalBox.onclick = () => {
+  shop-panel.style.display="none";
+  lootOverlay.style.display="flex";
+  lootBox.style.display="flex";
+  diamondReveal.style.display="none";
 
-// -------- PING TIMER ----------
-let pingSeconds = 20*60;
-setInterval(()=>{
-  if(pingSeconds>0) pingSeconds--;
-  const m = Math.floor(pingSeconds/60).toString().padStart(2,'0');
-  const s = (pingSeconds%60).toString().padStart(2,'0');
-  document.getElementById("ping-count").innerText = `${m}:${s}`;
-},1000);
+  setTimeout(()=>{
+    lootBox.style.display="none";
+    diamondReveal.style.display="block";
+  },1500);
+};
 
-// -------- HOST / JOIN LOGIC ----------
-let players = [];
-let roomCode = "";
-
-function generateCode(length=4){
-  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  let code = "";
-  for(let i=0;i<length;i++) code+=chars.charAt(Math.floor(Math.random()*chars.length));
-  return code;
-}
-
-const hostBtn = document.getElementById("hostBtn");
-const joinBtn = document.getElementById("joinBtn");
-const joinInput = document.getElementById("joinCodeInput");
-const startBtn = document.getElementById("startBtn");
-
-hostBtn.onclick = ()=>{
-  roomCode = generateCode();
-  alert("Room Code: " + roomCode);
-  players = ["Host"];
-  updateStartButton();
-}
-
-joinBtn.onclick = ()=>{
-  const code = joinInput.value.toUpperCase();
-  if(code===roomCode){
-    const name = "Player" + (players.length+1);
-    players.push(name);
-    alert(`${name} joined the room!`);
-    updateStartButton();
-  } else {
-    alert("Wrong code!");
-  }
-}
-
-function updateStartButton(){
-  startBtn.disabled = players.length<3;
-}
-
-startBtn.onclick = ()=>{
-  if(players.length>=3) alert("Game Starting with " + players.join(", "));
-  else alert("Need at least 3 players to start");
-}
+closeLoot.onclick = () => {
+  lootOverlay.style.display="none";
+  inventoryItems.innerHTML = `
+    <img src="assets/charms/diamond.png" style="width:32px;">
+    Diamond Charm
+  `;
+};
 </script>
 
 </body>
