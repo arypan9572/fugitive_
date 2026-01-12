@@ -5,261 +5,257 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fugitive</title>
 
+<!-- SF Pro Display from CDN -->
+<link href="https://fonts.cdnfonts.com/css/sf-pro-display" rel="stylesheet">:contentReference[oaicite:3]{index=3}
+
 <style>
-/* Embed SF Pro Semibold - make sure SF-Pro-Semibold.ttf is in same folder */
-@font-face {
-  font-family: 'SFPro';
-  src: url('SF-Pro-Semibold.ttf') format('truetype');
-  font-weight: 600;
-  font-style: normal;
+/* Apple‑style font usage */
+body, button, input, p, h1, h2 {
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
-/* Global Dark Apple Theme */
+/* Dark background */
 body {
-  margin:0;
-  font-family:'SFPro', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  background:#121212;
-  color:#ffffff;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:flex-start;
-  min-height:100vh;
-  width:100vw;
-  overflow:hidden;
+  margin: 0;
+  overflow: hidden;
+  background: #0d0d0d;
+  color: #fff;
+  display: flex;
+  justify-content: center;
 }
 
-/* 9:16 Aspect ratio container */
+/* 9:16 container */
 #app-container {
-  position:relative;
-  width:100%;
-  max-width:450px;
-  height:800px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:flex-start;
+  width: 100%;
+  max-width: 450px;
+  height: 800px;
+  position: relative;
 }
 
-/* Header / Title */
+/* Header */
 header {
-  text-align:center;
-  margin-top:20px;
+  text-align: center;
+  margin-top: 20px;
 }
 header h1 {
-  font-family:'SFPro';
-  font-weight:600;
-  font-size:2.8em;
-  color:#ffffff;
-  letter-spacing:1px;
-  margin:0;
+  font-size: 2.8em;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: 1.2px;
 }
 header p {
-  font-family:'SFPro';
-  font-weight:400;
-  font-size:1em;
-  color:#ccc;
-  margin-top:4px;
+  font-size: 1em;
+  color: #ccc;
+  margin: 4px;
 }
 
-/* Panel styling - Apple blur style */
+/* Glass‑style panel */
 .panel {
-  backdrop-filter:blur(20px);
-  background:rgba(30,30,30,0.7);
-  border-radius:20px;
-  padding:20px;
-  margin:12px;
-  box-shadow:0 4px 12px rgba(0,0,0,0.3);
-  font-family:'SFPro';
+  backdrop-filter: blur(18px);
+  background: rgba(30,30,30,0.55);
+  border-radius: 20px;
+  padding: 18px;
+  margin: 10px auto;
+  width: 90%;
+  transition: all 0.3s ease;
 }
 
-/* Buttons */
-button {
-  padding:12px 28px;
-  margin:8px;
-  border-radius:12px;
-  border:none;
-  background:rgba(255,255,255,0.08);
-  color:#fff;
-  font-weight:600;
-  cursor:pointer;
-  transition:all 0.25s ease;
-  backdrop-filter:blur(10px);
-  font-family:'SFPro';
-}
-button:hover {
-  background:rgba(255,255,255,0.15);
-  transform:scale(1.05);
+/* Top right menu */
+#menu-bar {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-/* Separate inventory and shop panels */
-#inventory-panel, #shop-panel {
-  position:absolute;
-  top:18%;
-  left:50%;
-  transform:translateX(-50%) scale(0.95);
-  display:none;
-  width:90%;
-  z-index:10; /* Above map */
+.menu-btn {
+  padding: 8px 14px;
+  border-radius: 12px;
+  border: none;
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+.menu-btn:hover {
+  background: rgba(255,255,255,0.15);
+  transform: scale(1.05);
 }
 
-/* Charm boxes colors */
-.charm-box {
-  display:inline-block;
-  padding:10px 14px;
-  margin:6px;
-  border-radius:12px;
-  font-weight:600;
-  cursor:pointer;
-  transition:all 0.3s ease;
-  font-family:'SFPro';
-}
-.charm-box.normal { background:#007AFF; color:#fff; } /* Blue */
-.charm-box.super { background:#FFD60A; color:#000; }   /* Yellow */
-.charm-box.ultra { background:#FF3B30; color:#fff; }   /* Red */
-.charm-box:hover { transform:scale(1.1); }
-
-/* Map container */
+/* Map */
 #map {
-  position:relative;
-  width:90%;
-  height:300px;
-  margin-top:20px;
-  border-radius:20px;
-  background:rgba(40,40,40,0.6);
-  overflow:hidden;
-  z-index:1; /* Behind panels */
+  position: absolute;
+  top: 110px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  height: 300px;
+  background: rgba(25,25,25,0.65);
+  border-radius: 18px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
 }
 
-/* Apple Maps-style blue dot */
+/* Apple Maps‑style blue dot */
 #player-dot {
-  position:absolute;
-  width:18px;
-  height:18px;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  border-radius:50%;
-  background:#007AFF;
-  box-shadow:0 0 8px rgba(0,122,255,0.3),0 0 16px rgba(0,122,255,0.2);
-  font-family:'SFPro';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #007AFF;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  box-shadow: 0 0 6px rgba(0,122,255,0.3);
 }
 #player-dot::after {
   content:"";
-  position:absolute;
-  width:36px;
-  height:36px;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  border-radius:50%;
-  background:rgba(0,122,255,0.1);
-  animation:pulse 2s infinite;
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  background: rgba(0,122,255,0.1);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
 }
 
-/* Pulse animation */
 @keyframes pulse {
-  0%{transform:translate(-50%,-50%) scale(1); opacity:0.6;}
-  50%{transform:translate(-50%,-50%) scale(1.4); opacity:0.25;}
-  100%{transform:translate(-50%,-50%) scale(1); opacity:0.6;}
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+  50% { transform: translate(-50%, -50%) scale(1.4); opacity: 0.25; }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
 }
 
-/* Ping Timer */
+/* Inventory & Shop panels */
+.overlay-panel {
+  position: absolute;
+  top: 130px;
+  left: 50%;
+  transform: translateX(-50%) scale(0.9);
+  width: 90%;
+  backdrop-filter: blur(20px);
+  background: rgba(30,30,30,0.75);
+  border-radius: 18px;
+  padding: 18px;
+  z-index: 20;
+  display: none;
+}
+
+/* Charm box buttons */
+.charm-box {
+  display: inline-block;
+  padding: 10px 14px;
+  margin: 6px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.25s ease;
+}
+.charm-box.normal { background:#007AFF; color:#fff; }  /* Blue */
+.charm-box.super  { background:#FFD60A; color:#000; }  /* Yellow */
+.charm-box.ultra { background:#FF3B30; color:#fff; }  /* Red */
+.charm-box:hover  { transform: scale(1.1); }
+
+/* Ping timer */
 #ping-timer {
-  position:absolute;
-  bottom:8%;
-  left:50%;
-  transform:translateX(-50%);
-  font-size:1.2em;
-  padding:6px 12px;
-  backdrop-filter:blur(12px);
-  background:rgba(30,30,30,0.7);
-  border-radius:15px;
-  color:#ffffff;
-  text-align:center;
-  box-shadow:0 2px 10px rgba(0,0,0,0.3);
-  font-family:'SFPro';
+  position: absolute;
+  bottom: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 12px;
+  background: rgba(30,30,30,0.7);
+  border-radius: 15px;
+  text-align: center;
+  font-size: 1.2em;
+  backdrop-filter: blur(10px);
 }
 </style>
 </head>
-<body>
 
+<body>
 <div id="app-container">
 
-<header>
-  <h1>FUGITIVE</h1>
-  <p id="roleDisplay">Select your role</p>
-</header>
+  <!-- Header -->
+  <header>
+    <h1>FUGITIVE</h1>
+    <p id="roleDisplay">Select your role</p>
+  </header>
 
-<div class="panel">
-  <button id="hostBtn">Host Game</button>
-  <button id="joinBtn">Join Game</button>
-  <button id="inventoryBtn">Inventory</button>
-  <button id="shopBtn">Shop</button>
-</div>
+  <!-- Menu (top right) -->
+  <div id="menu-bar">
+    <button class="menu-btn" id="inventoryBtn">Inventory</button>
+    <button class="menu-btn" id="shopBtn">Shop</button>
+  </div>
 
-<!-- Inventory Panel -->
-<div id="inventory-panel" class="panel">
-  <h2>Inventory</h2>
-  <div class="charm-box normal">Normal Box</div>
-  <button id="closeInventory">Close</button>
-</div>
+  <!-- Map -->
+  <div id="map">
+    <div id="player-dot"></div>
+  </div>
 
-<!-- Shop Panel -->
-<div id="shop-panel" class="panel">
-  <h2>Shop</h2>
-  <div class="charm-box super">Super Box</div>
-  <div class="charm-box ultra">Ultra Box</div>
-  <button id="closeShop">Close</button>
-</div>
+  <!-- Inventory Panel -->
+  <div id="inventory-panel" class="overlay-panel">
+    <h2>Inventory</h2>
+    <p>No items yet</p>
+    <button class="menu-btn" id="closeInventory">Close</button>
+  </div>
 
-<div id="map">
-  <div id="player-dot"></div>
-</div>
+  <!-- Shop Panel -->
+  <div id="shop-panel" class="overlay-panel">
+    <h2>Charm Shop</h2>
+    <div class="charm-box normal">Normal Box</div>
+    <div class="charm-box super">Super Box</div>
+    <div class="charm-box ultra">Ultra Box</div>
+    <br>
+    <button class="menu-btn" id="closeShop">Close</button>
+  </div>
 
-<div id="ping-timer">Ping in: <span id="ping-count">20:00</span></div>
+  <!-- Ping Timer -->
+  <div id="ping-timer">Ping in: <span id="ping-count">20:00</span></div>
 
 </div>
 
 <script>
-// Ping timer
-let pingSeconds=20*60;
-setInterval(()=>{
-  if(pingSeconds>0) pingSeconds--;
-  const m=Math.floor(pingSeconds/60).toString().padStart(2,'0');
-  const s=(pingSeconds%60).toString().padStart(2,'0');
-  document.getElementById("ping-count").innerText=`${m}:${s}`;
-},1000);
+// Timer
+let pingSeconds = 20 * 60;
+setInterval(() => {
+  if (pingSeconds > 0) pingSeconds--;
+  const m = Math.floor(pingSeconds/60).toString().padStart(2,'0');
+  const s = (pingSeconds % 60).toString().padStart(2,'0');
+  document.getElementById("ping-count").innerText = `${m}:${s}`;
+}, 1000);
 
-// Inventory & Shop toggle
-const inventoryBtn=document.getElementById("inventoryBtn");
-const shopBtn=document.getElementById("shopBtn");
-const invPanel=document.getElementById("inventory-panel");
-const shopPanel=document.getElementById("shop-panel");
-
-inventoryBtn.onclick=()=>{ invPanel.style.display="block"; shopPanel.style.display="none"; invPanel.style.transform="translateX(-50%) scale(1)"; };
-shopBtn.onclick=()=>{ shopPanel.style.display="block"; invPanel.style.display="none"; shopPanel.style.transform="translateX(-50%) scale(1)"; };
-
-document.getElementById("closeInventory").onclick=()=>{ invPanel.style.transform="translateX(-50%) scale(0.95)"; setTimeout(()=>{ invPanel.style.display="none"; },400); };
-document.getElementById("closeShop").onclick=()=>{ shopPanel.style.transform="translateX(-50%) scale(0.95)"; setTimeout(()=>{ shopPanel.style.display="none"; },400); };
-
-// Role selection
-document.getElementById("hostBtn").onclick=()=>{ document.getElementById("roleDisplay").innerText="🚓 COP - Hosting Game"; }
-document.getElementById("joinBtn").onclick=()=>{ document.getElementById("roleDisplay").innerText="🏃 FUGITIVE - Joining Game"; }
+// Panels toggle
+const invPanel = document.getElementById("inventory-panel");
+const shopPanel = document.getElementById("shop-panel");
+document.getElementById("inventoryBtn").onclick = () => {
+  invPanel.style.display = "block"; shopPanel.style.display = "none";
+  invPanel.style.transform = "translateX(-50%) scale(1)";
+};
+document.getElementById("shopBtn").onclick = () => {
+  shopPanel.style.display = "block"; invPanel.style.display = "none";
+  shopPanel.style.transform = "translateX(-50%) scale(1)";
+};
+document.getElementById("closeInventory").onclick = () => invPanel.style.display = "none";
+document.getElementById("closeShop").onclick = () => shopPanel.style.display = "none";
 
 // Player movement
-const player=document.getElementById("player-dot");
-let posX=214, posY=139;
-const speed=3;
-const map=document.getElementById("map");
-document.addEventListener('keydown',(e)=>{
-  const rect=map.getBoundingClientRect();
-  if(e.key==='ArrowUp'||e.key==='w'){ posY=Math.max(0,posY-speed); }
-  if(e.key==='ArrowDown'||e.key==='s'){ posY=Math.min(rect.height-22,posY+speed); }
-  if(e.key==='ArrowLeft'||e.key==='a'){ posX=Math.max(0,posX-speed); }
-  if(e.key==='ArrowRight'||e.key==='d'){ posX=Math.min(rect.width-22,posX+speed); }
-  player.style.left=posX+'px';
-  player.style.top=posY+'px';
+const player = document.getElementById("player-dot");
+let posX = 216, posY = 142;
+const speed = 3;
+const map = document.getElementById("map");
+document.addEventListener('keydown', (e) => {
+  const rect = map.getBoundingClientRect();
+  if (e.key === 'ArrowUp' || e.key === 'w') posY = Math.max(0, posY - speed);
+  if (e.key === 'ArrowDown' || e.key === 's') posY = Math.min(rect.height - 18, posY + speed);
+  if (e.key === 'ArrowLeft' || e.key === 'a') posX = Math.max(0, posX - speed);
+  if (e.key === 'ArrowRight' || e.key === 'd') posX = Math.min(rect.width - 18, posX + speed);
+  player.style.left = posX + 'px';
+  player.style.top = posY + 'px';
 });
 </script>
 
