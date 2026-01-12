@@ -5,13 +5,120 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fugitive</title>
 <style>
-  body { margin:0; font-family:-apple-system,SF Pro,sans-serif; overflow:hidden; }
-  canvas { position:absolute; top:0; left:0; width:100%; height:100%; z-index:0; }
-  @keyframes pulse {
-    0% { transform: translate(-50%,-50%) scale(1); opacity:1; }
-    50% { transform: translate(-50%,-50%) scale(1.3); opacity:0.7; }
-    100% { transform: translate(-50%,-50%) scale(1); opacity:1; }
-  }
+/* General */
+body {
+  margin:0;
+  overflow:hidden;
+  font-family:-apple-system, "SF Pro Semibold", "SF Pro Semibold Italic", sans-serif;
+  background:black;
+}
+canvas { position:absolute; top:0; left:0; width:100%; height:100%; z-index:0; }
+
+/* Keyframes */
+@keyframes pulse { 0%{transform:translate(-50%,-50%) scale(1);opacity:1;} 50%{transform:translate(-50%,-50%) scale(1.3);opacity:0.7;} 100%{transform:translate(-50%,-50%) scale(1);opacity:1;} }
+@keyframes fadeIn { 0%{opacity:0;} 100%{opacity:1;} }
+@keyframes zoomIn { 0%{transform:scale(0.7);} 100%{transform:scale(1);} }
+@keyframes glowHover { 0%{box-shadow:0 0 10px #0ff;} 50%{box-shadow:0 0 25px #0ff;} 100%{box-shadow:0 0 10px #0ff;} }
+
+/* Panels */
+.panel {
+  backdrop-filter:blur(20px);
+  background:rgba(15,15,25,0.65);
+  border-radius:20px;
+  padding:20px;
+  margin:10px;
+  box-shadow:0 0 30px rgba(0,255,255,0.3);
+  color:white;
+  animation:fadeIn 1s ease;
+}
+
+/* Header */
+header { text-align:center; margin-top:20px; z-index:2; animation:fadeIn 2s ease; }
+header h1 {
+  font-style:italic;
+  font-weight:600;
+  font-size:2.2em;
+  color:#0ff;
+  text-shadow:0 0 10px #00f,0 0 25px #0ff,0 0 50px #0ff;
+}
+
+/* Buttons */
+button {
+  padding:12px 28px;
+  margin:6px;
+  border-radius:12px;
+  border:1px solid #0ff;
+  background:rgba(0,0,50,0.3);
+  color:#0ff;
+  font-weight:600;
+  cursor:pointer;
+  text-shadow:0 0 10px #0ff;
+  transition:all 0.3s ease;
+}
+button:hover { 
+  transform:scale(1.15);
+  animation:glowHover 1s infinite;
+}
+
+/* Inventory Charm Boxes */
+.charm-box {
+  display:inline-block;
+  padding:12px;
+  margin:8px;
+  border-radius:14px;
+  font-weight:600;
+  cursor:pointer;
+  transition:all 0.5s ease;
+}
+.charm-box.normal { background:#2980b9; }
+.charm-box.super { background:#8e44ad; }
+.charm-box.ultra { background:#e74c3c; }
+.charm-box:hover {
+  transform:scale(1.4);
+  box-shadow:0 0 30px #0ff,0 0 60px #00f;
+}
+
+/* Map */
+#map {
+  position:relative;
+  width:90%;
+  height:300px;
+  margin:20px auto;
+  border-radius:20px;
+  background:rgba(0,0,0,0.25);
+  box-shadow:0 0 25px #0ff;
+  overflow:hidden;
+  z-index:2;
+}
+
+/* Player Dot */
+#player-dot {
+  position:absolute;
+  width:22px; height:22px;
+  background:#0ff;
+  border-radius:50%;
+  top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  box-shadow:0 0 20px #0ff,0 0 40px #00f;
+  animation:pulse 2s infinite;
+}
+
+/* Ping Timer */
+#ping-timer {
+  position:absolute;
+  bottom:8%;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:1.3em;
+  padding:6px 12px;
+  backdrop-filter:blur(12px);
+  background:rgba(0,0,50,0.4);
+  border-radius:15px;
+  color:#0ff;
+  text-align:center;
+  box-shadow:0 0 20px #0ff;
+  animation:fadeIn 2s ease;
+}
 </style>
 </head>
 <body>
@@ -19,60 +126,58 @@
 <!-- Aurora Background -->
 <canvas id="aurora"></canvas>
 
-<!-- Main Container -->
 <div style="position:relative; width:100%; max-width:450px; height:800px; margin:auto; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; z-index:1;">
 
-  <!-- Header -->
-  <header style="text-align:center; margin-top:20px; z-index:2;">
-    <h1 style="font-style:italic; font-size:2em; text-shadow:0 0 10px #00f,0 0 20px #0ff; color:white;">FUGITIVE</h1>
-    <p id="roleDisplay" style="color:white;">Select your role</p>
-  </header>
+<!-- Header -->
+<header>
+  <h1>FUGITIVE</h1>
+  <p id="roleDisplay" style="color:white;">Select your role</p>
+</header>
 
-  <!-- Menu -->
-  <div style="backdrop-filter:blur(15px); background:rgba(20,20,30,0.6); border-radius:20px; padding:15px; margin:10px; box-shadow:0 0 20px rgba(0,255,255,0.2); color:white; z-index:2;">
-    <button id="hostBtn" style="padding:12px 25px; margin:5px; font-size:16px; border-radius:12px; border:1px solid #0ff; background:rgba(0,0,50,0.3); color:#0ff; cursor:pointer; text-shadow:0 0 8px #0ff;">Host Game</button>
-    <button id="joinBtn" style="padding:12px 25px; margin:5px; font-size:16px; border-radius:12px; border:1px solid #0ff; background:rgba(0,0,50,0.3); color:#0ff; cursor:pointer; text-shadow:0 0 8px #0ff;">Join Game</button>
-    <button id="inventoryBtn" style="padding:12px 25px; margin:5px; font-size:16px; border-radius:12px; border:1px solid #0ff; background:rgba(0,0,50,0.3); color:#0ff; cursor:pointer; text-shadow:0 0 8px #0ff;">Inventory</button>
-  </div>
+<!-- Menu -->
+<div class="panel">
+  <button id="hostBtn">Host Game</button>
+  <button id="joinBtn">Join Game</button>
+  <button id="inventoryBtn">Inventory</button>
+</div>
 
-  <!-- Inventory Panel -->
-  <div id="inventory" style="position:absolute; top:20%; left:50%; transform:translateX(-50%); width:90%; text-align:center; backdrop-filter:blur(15px); background:rgba(20,20,30,0.6); border-radius:20px; padding:20px; box-shadow:0 0 30px #0ff; color:white; display:none; z-index:3;">
-    <h2>Inventory / Charm Boxes</h2>
-    <div class="charm-box" style="padding:12px; margin:8px; border-radius:12px; background:#2980b9; font-weight:bold; cursor:pointer; display:inline-block;">Normal Box</div>
-    <div class="charm-box" style="padding:12px; margin:8px; border-radius:12px; background:#8e44ad; font-weight:bold; cursor:pointer; display:inline-block;">Super Box</div>
-    <div class="charm-box" style="padding:12px; margin:8px; border-radius:12px; background:#e74c3c; font-weight:bold; cursor:pointer; display:inline-block;">Ultra Box</div>
-    <br>
-    <button id="closeInventory" style="padding:12px 25px; margin-top:10px; font-size:16px; border-radius:12px; border:1px solid #0ff; background:rgba(0,0,50,0.3); color:#0ff; cursor:pointer; text-shadow:0 0 8px #0ff;">Close</button>
-  </div>
+<!-- Inventory Panel -->
+<div id="inventory" class="panel" style="position:absolute; top:20%; left:50%; transform:translateX(-50%) scale(0.9); display:none;">
+  <h2>Inventory / Charm Boxes</h2>
+  <div class="charm-box normal">Normal Box</div>
+  <div class="charm-box super">Super Box</div>
+  <div class="charm-box ultra">Ultra Box</div>
+  <br>
+  <button id="closeInventory">Close</button>
+</div>
 
-  <!-- Map -->
-  <div id="map" style="position:relative; width:90%; height:300px; margin:20px auto; border-radius:20px; background:rgba(0,0,0,0.3); box-shadow:0 0 15px #0ff; overflow:hidden; z-index:2;">
-    <div id="player-dot" style="position:absolute; width:20px; height:20px; background:#0ff; border-radius:50%; top:50%; left:50%; transform:translate(-50%,-50%); box-shadow:0 0 15px #0ff,0 0 30px #00f; animation:pulse 2s infinite;"></div>
-  </div>
+<!-- Map -->
+<div id="map">
+  <div id="player-dot"></div>
+</div>
 
-  <!-- Ping Timer -->
-  <div id="ping-timer" style="position:absolute; bottom:10%; left:50%; transform:translateX(-50%); font-size:1.2em; text-align:center; z-index:3; backdrop-filter:blur(10px); background:rgba(0,0,50,0.3); border-radius:15px; padding:5px 10px; color:#0ff;">
-    Ping in: <span id="ping-count">20:00</span>
-  </div>
+<!-- Ping Timer -->
+<div id="ping-timer">Ping in: <span id="ping-count">20:00</span></div>
 
 </div>
 
 <script>
-// Aurora Background
+// Aurora background
 const canvas=document.getElementById("aurora");
 canvas.width=canvas.offsetWidth; canvas.height=canvas.offsetHeight;
 const ctx=canvas.getContext("2d");
 let gradientOffset=0;
 function drawAurora(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  const gradient=ctx.createLinearGradient(0,gradientOffset,canvas.width,canvas.height+gradientOffset);
-  gradient.addColorStop(0,'#001f3f');
-  gradient.addColorStop(0.3,'#004080');
-  gradient.addColorStop(0.6,'#00bfff');
-  gradient.addColorStop(1,'#001f3f');
-  ctx.fillStyle=gradient;
+  const grad=ctx.createLinearGradient(0,gradientOffset,canvas.width,canvas.height+gradientOffset);
+  grad.addColorStop(0,'#001f3f');
+  grad.addColorStop(0.3,'#004080');
+  grad.addColorStop(0.6,'#00bfff');
+  grad.addColorStop(1,'#001f3f');
+  ctx.fillStyle=grad;
   ctx.fillRect(0,0,canvas.width,canvas.height);
-  gradientOffset+=0.5; if(gradientOffset>canvas.height) gradientOffset=0;
+  gradientOffset+=0.5;
+  if(gradientOffset>canvas.height) gradientOffset=0;
   requestAnimationFrame(drawAurora);
 }
 drawAurora();
@@ -81,41 +186,49 @@ drawAurora();
 let pingSeconds=20*60;
 setInterval(()=>{
   if(pingSeconds>0) pingSeconds--;
-  const min=Math.floor(pingSeconds/60).toString().padStart(2,'0');
-  const sec=(pingSeconds%60).toString().padStart(2,'0');
-  document.getElementById("ping-count").innerText=`${min}:${sec}`;
+  const m=Math.floor(pingSeconds/60).toString().padStart(2,'0');
+  const s=(pingSeconds%60).toString().padStart(2,'0');
+  document.getElementById("ping-count").innerText=`${m}:${s}`;
 },1000);
 
-// Inventory toggles
-document.getElementById("inventoryBtn").onclick=()=>{ document.getElementById("inventory").style.display="block"; }
-document.getElementById("closeInventory").onclick=()=>{ document.getElementById("inventory").style.display="none"; }
+// Inventory toggle
+document.getElementById("inventoryBtn").onclick=()=>{ 
+  const inv=document.getElementById("inventory");
+  inv.style.display="block";
+  inv.style.transition="all 0.5s ease";
+  inv.style.transform="translateX(-50%) scale(1)";
+};
+document.getElementById("closeInventory").onclick=()=>{
+  const inv=document.getElementById("inventory");
+  inv.style.transform="translateX(-50%) scale(0.9)";
+  setTimeout(()=>{ inv.style.display="none"; },500);
+};
 
 // Role selection
-document.getElementById("hostBtn").onclick=()=>{ document.getElementById("roleDisplay").innerText="🚓 COP - Hosting Game"; alert("Hosting Game! (Map & ping soon)"); }
-document.getElementById("joinBtn").onclick=()=>{ document.getElementById("roleDisplay").innerText="🏃 FUGITIVE - Joining Game"; alert("Joining Game! (Map & ping soon)"); }
+document.getElementById("hostBtn").onclick=()=>{ document.getElementById("roleDisplay").innerText="🚓 COP - Hosting Game"; }
+document.getElementById("joinBtn").onclick=()=>{ document.getElementById("roleDisplay").innerText="🏃 FUGITIVE - Joining Game"; }
 
 // Player movement
 const player=document.getElementById("player-dot");
-let posX=220, posY=150; // start center
+let posX=214, posY=139;
 const speed=3;
 const map=document.getElementById("map");
-const mapRect=map.getBoundingClientRect();
-document.addEventListener('keydown', (e)=>{
-  if(e.key==='ArrowUp' || e.key==='w'){ posY=Math.max(0,posY-speed); }
-  if(e.key==='ArrowDown' || e.key==='s'){ posY=Math.min(mapRect.height-20,posY+speed); }
-  if(e.key==='ArrowLeft' || e.key==='a'){ posX=Math.max(0,posX-speed); }
-  if(e.key==='ArrowRight' || e.key==='d'){ posX=Math.min(mapRect.width-20,posX+speed); }
+document.addEventListener('keydown',(e)=>{
+  const rect=map.getBoundingClientRect();
+  if(e.key==='ArrowUp'||e.key==='w'){ posY=Math.max(0,posY-speed); }
+  if(e.key==='ArrowDown'||e.key==='s'){ posY=Math.min(rect.height-22,posY+speed); }
+  if(e.key==='ArrowLeft'||e.key==='a'){ posX=Math.max(0,posX-speed); }
+  if(e.key==='ArrowRight'||e.key==='d'){ posX=Math.min(rect.width-22,posX+speed); }
   player.style.left=posX+'px';
   player.style.top=posY+'px';
 });
 
-// Charm box opening effect
-const charms=document.querySelectorAll('.charm-box');
-charms.forEach(charm=>{
+// Charm box animation
+document.querySelectorAll('.charm-box').forEach(charm=>{
   charm.onclick=()=>{
-    charm.style.transform="scale(1.5)";
-    charm.style.boxShadow="0 0 25px #fff,0 0 50px #0ff";
-    setTimeout(()=>{ charm.style.transform="scale(1)"; charm.style.boxShadow="0 0 15px #0ff"; },800);
+    charm.style.transform="scale(1.6)";
+    charm.style.boxShadow="0 0 30px #fff,0 0 60px #0ff";
+    setTimeout(()=>{ charm.style.transform="scale(1)"; charm.style.boxShadow="0 0 25px #0ff"; },800);
   };
 });
 </script>
